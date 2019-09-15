@@ -1,0 +1,79 @@
+1. cd DirectoryName
+-change directory
+2. cd ..
+-go back to previous directory
+3. mkdir FolderName
+-create a folder/ a directory
+4. cat> filename.txt
+- create a file.txt
+5. sudo apt update
+-get updates
+6. sudo apt upgrade
+-upgrade the updates
+7. sudo su
+- log in as super user
+8. ls
+-list components in a directory
+9. cp -b notes.txt /home
+-copy notes.txt to home
+10. rm -r notes.txt
+-delete notes.txt
+11. mv notes.txt /home
+-move the file notes.txt to home directory
+
+-SUDO IS REQUIRED IN CP, RM AND MV
+12. groups
+-checking groups of a user
+13. sudo adduser ics3206 sudo
+-add user to admin group
+14. sudo nano /etc/pam.d/common-password
+-password requirements
+15. sudo -i gedit /etc/login.defs
+-to edit a read only
+16. passwd -Sa
+-check password details
+17. sudo groupadd mygroup
+-adding a group
+18. grep mygroup /etc/group
+- to know users in a group
+19. chgrp mygoup TEST.txt
+-change ownership of that file
+20. chmod 777 TEST.txt
+-change file to read, write and executable
+21. ls -l filename
+-check file permissions
+22.apache2 -v
+-checking version of apache installed(2.4.29)
+23. service apache2 status
+-check if apache2 is running
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
