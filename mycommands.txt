@@ -46,9 +46,18 @@
 -checking version of apache installed(2.4.29)
 23. service apache2 status
 -check if apache2 is running
-
-
-
+24. sudo systemctl is-enabled apache2
+-check if apache is enabled
+25. :x! then enter
+-save and exit a file in cmd using vi
+26. vi /etc/apache2/ports.conf
+-open file to see port configurations in apache2
+27. sudo systemctl restart apache2
+-restarting apache 2 after configuring necessary ports in file above.
+28.sudo netstat -tlpn| grep apache2
+-check if apache listens http traffic from ports configured in file in no. 26.
+29. ss- tlpn| grep apache2
+-same as 28 above
 
 
 
