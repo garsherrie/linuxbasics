@@ -1,0 +1,202 @@
+1. Hiding apache version and os identity from errors
+When you install Apache with source or any other package installers like yum, it displays the version of your Apache web server installed on your server with the Operating system name of your server in Errors. It also shows the information about Apache modules installed in your server.
+
+
+
+
+
+In above picture, you can see that Apache is showing its version with the OS installed in your server. This can be a major security threat to your web server as well as your Linux box too. To prevent Apache to not to display these information to the world, we need to make some changes in Apache main configuration file.
+
+
+Open configuration file with vim editor and search for “ServerSignature“, its by default On. We need to Off these server signature and the second line “ServerTokens Prod” tells Apache to return only Apache as product in the server response header on the every page request, It suppress the OS, major and minor version info.
+
+2 Updating apache regurlarly
+pache developer community is continuously working on security issues and releasing its updated version with new security options. So It is always recommended to use the latest version of Apache as your web server.
+
+To check Apache version: You can check your current version with apache2 -v command.
+It is also recommended to keep your Kernel and OS updated to the latest stable releases if you are not running any specific application which works only on specific OS or Kernel.
+
+3. running apache as a separate user and group
+With a default installation Apache runs its process with user nobody or daemon. For security reasons it is recommended to run Apache in its own non-privileged account. For example: http-web.
+Now you need to tell Apache to run with this new user and to do so, we need to make an entry in /etc/httpd/conf/httpd.conf and restart the service.
+
+Open /etc/httpd/conf/httpd.conf with vim editor and search for keyword “User” and “Group” and there you will need to specify the username and groupname to use.
+
+4. Use mod_security and mod_evasive Modules to Secure Apache
+These two modules “mod_security” and “mod_evasive” are very popular modules of Apache in terms of security.
+
+mod_security
+Where mod_security works as a firewall for our web applications and allows us to monitor traffic on a real time basis. It also helps us to protect our websites or web server from brute force attacks. You can simply install mod_security on your server with the help of your default package installers.
+
+Mod_evasive
+mod_evasive works very efficiently, it takes one request to process and processes it very well. It prevents DDOS attacks from doing as much damage. This feature of mod_evasive enables it to handle the HTTP brute force and Dos or DDos attack. This module detects attacks with three methods.
+
+    If so many requests come to a same page in a few times per second.
+    If any child process trying to make more than 50 concurrent requests.
+    If any IP still trying to make new requests when its temporarily blacklisted.
+
+mod_evasive can be installed directly from the source. Here, we have an Installation and setup guide of these modules which will help you to set up these Apache modules in your Linux box.
+
+5. Limit Request Size
+By default Apache has no limit on the total size of the HTTP request i.e. unlimited and when you allow large requests on a web server its possible that you could be a victim of Denial of service attacks. We can Limit the requests size of an Apache directive “LimitRequestBody” with the directory tag.
+
+You can set the value in bytes from 0 (unlimited) to 2147483647 (2GB) that are allowed in a request body. You can set this limit according to your site needs, Suppose you have a site where you allows uploads and you want to limit the upload size for a particular directory.
+
+
+
+
+
+Here in this example, user_uploads is a directory which contains files uploaded by users. We are putting a limit of 500K for this.
+
+6. Protect DDOS attacks and Hardening
+
+Well, it’s true that you cannot completely protect your web site from DDos attacks. Here are some directives which can help you to have a control on it.
+
+    TimeOut : This directive allows you to set the amount of time the server will wait for certain events to complete before it fails. Its default value is 300 secs. It’s good to keep this value low on those sites which are subject to DDOS attacks. This value totally depends on kind of request you are getting on your website. Note: It could pose problems with come CGI scripts.
+    MaxClients : This directive allows you to set the limit on connections that will be served simultaneously. Every new connection will be queued up after this limit. It is available with Prefork and Worker both MPM. The default value of it is 256.
+    KeepAliveTimeout : Its the amount of time the server will wait for a subsequent request before closing the connection. Default value is 5 secs.
+    LimitRequestFields : It helps us to set a limit on the number of HTTP request’s header fields that will be accepted from the clients. Its default value is 100. It is recommended to lower this value if DDos attacks are occurring as a result of so many http request headers.
+    LimitRequestFieldSize : It helps us to set a size limit on the HTTP Request header.
+
+7. Enable apache Logging
+Apache allows you to logging independently of your OS logging. It is wise to enable Apache logging, because it provides more information, such as the commands entered by users that have interacted with your Web server.
+
+To do so you need to include the mod_log_config module. There are three main logging-related directives available with Apache.
+
+    TransferLog: Creating a log file.
+    LogFormat : Specifying a custom format.
+    CustomLog : Creating and formatting a log file.
+
+You can also use them for a particular website it you are doing Virtual hosting and for that you need to specify it in the virtual host section. For example, here is the my website virtual host configuration with logging enabled.
+
+8. Securing Apache with SSL Certificates
+
+Last, but not the least SSL certificates, you can secure your all the communication in an encrypted manner over the Internet with SSL certificate. Suppose you have a website in which people login by proving their Login credentials or you have an E- Commerce website where people provides their bank details or Debit/Credit card details to purchase products, by default your web server send these details in plain – text format but when you use SSL certificates to your websites, Apache sends all this information in encrypted text.
+
+
+
+
+
+
+You can purchase SSl certificates from So many different SSL providers like namecheap.com. If you are running a very small web business and do not willing to purchase an SSL certificate you can still assign a Self signed certificate to your website. Apache uses the mod_ssl module to support SSL certificate.
+
+
+
+Once your certificate has been created and signed. Now you need to add this in Apache configuration. Open main configuration file with vim editor and add the following lines and restart the service.
+
+
+
+
+    You've now started the process for generating the following two files:
+        Private-Key File: Used to generate the CSR and later to secure and verify connections using the certificate.
+        Certificate Signing Request (CSR) file: Used to order your SSL certificate and later to encrypt messages that only its corresponding private key can decrypt.
+
+    When prompted for the Common Name (domain name), type the fully qualified domain (FQDN) for the site that you are going to secure.
+
+        Note: If you're generating an Apache CSR for a Wildcard certificate, make sure your common name starts with an asterisk (e.g., *.example.com).
+
+    When prompted, type your organizational information, beginning with your geographic information.
+
+        Note: You may have already set up default information.
+
+    Now, your OpenSSL .csr file is created.
+
+Order Your SSL/TLS Certificate
+
+    Open the .csr file you created with a text editor.
+
+    Copy the text, including the -----BEGIN NEW CERTIFICATE REQUEST----- and -----END NEW CERTIFICATE REQUEST----- tags, and paste it in to the DigiCert order form.
+
+Save Private Key
+
+Save (back up) the generated .key file. You need it later to install your SSL certificate.
+
+Install Certificate
+
+After you've received your SSL certificate from DigiCert, you can install it on your server.
+ If you still need to create a certificate signing request (CSR) and order your certificate, see Apache: Creating Your CSR with OpenSSL.
+
+After we've validated and issued your SSL certificate, you can install it on your Apache server (where the CSR was generated) and configure the server to use the certificate.
+How to Install and Configure Your SSL Certificate on Your Apache Server
+
+    Copy the certificate files to your server.
+
+        Log in to your DigiCert account and download the intermediate (DigiCertCA.crt) and your primary certificate (your_domain_name.crt) files.
+
+        Copy these files, along with the .key file you generated when creating the CSR, to the directory on the server where you keep your certificate and key files.
+
+            Note: Make them readable by root only to increase security.
+
+    Find the Apache configuration file (httpd.conf) you need to edit.
+
+    The location and name of the configuration file can vary from server to server—especially if you're using a special interface to manage your server configuration.
+
+        Apache's main configuration file is typically named httpd.conf or apache2.conf. Possible locations for this file include /etc/httpd/ or /etc/apache2/. For a comprehensive listing of default installation layouts for Apache HTTPD on various operating systems and distributions, see Httpd Wiki - DistrosDefaultLayout.
+
+        Often, the SSL certificate configuration is located in a <VirtualHost> block in a different configuration file. The configuration files may be under a directory like /etc/httpd/vhosts.d/, /etc/httpd/sites/, or in a file called httpd-ssl.conf.
+
+    One way to locate the SSL Configuration on Linux distributions is to search using grep, as shown in the example below.
+
+    Run the following command:
+
+    grep -i -r "SSLCertificateFile" /etc/httpd/
+
+        Note: Make sure to replace /etc/httpd/ with the base directory for your Apache installation.
+
+    Identify the SSL <VirtualHost> block you need to configure.
+
+    If your site needs to be accessible through both secure (https) and non-secure (http) connections, you need a virtual host for each type of connection. Make a copy of the existing non-secure virtual host and configure it for SSL as described in step 4.
+
+    If your site only needs to be accessed securely, configure the existing virtual host for SSL as described in step 4.
+
+    Configure the <VirtualHost> block for the SSL-enabled site
+
+        Below is a very simple example of a virtual host configured for SSL. The parts listed in blue are the parts you must add for SSL configuration.
+
+        <VirtualHost 192.168.0.1:443>
+            DocumentRoot /var/www/html2
+            ServerName www.yourdomain.com
+                SSLEngine on
+                SSLCertificateFile /path/to/your_domain_name.crt
+                SSLCertificateKeyFile /path/to/your_private.key
+                SSLCertificateChainFile /path/to/DigiCertCA.crt
+            </VirtualHost>
+
+        Make sure to adjust the file names to match your certificate files.
+
+            SSLCertificateFile is your DigiCert certificate file (e.g., your_domain_name.crt).
+
+            SSLCertificateKeyFile is the .key file generated when you created the CSR (e.g., your_private.key).
+
+            SSLCertificateChainFile is the DigiCert intermediate certificate file (e.g., DigiCertCA.crt)
+
+                Note: If the SSLCertificateChainFile directive does not work, try using the SSLCACertificateFile directive instead.
+
+    Test your Apache configuration file before restarting.
+
+    As a best practice, check your Apache configuration file for any errors before restarting Apache.
+
+        Caution: Apache won't start again if your configuration files have syntax errors.
+
+    Run the following command to test your configuration file (on some systems, it's apache2ctl): 
+
+9. Checking Listening Network ports
+
+With the help of ‘netstat‘ networking command you can view all open ports and associated programs. As I said above use ‘chkconfig‘ command to disable all unwanted network services from the system.
+ If you prefer to build your own shell commands to generate your Apache CSR, follow the instructions below.
+
+    Log in to your server via your terminal client (ssh).
+
+    Run Command
+
+    At the prompt, type the following command:
+
+        Note: Make sure to replace server with the name of your server.
+
+10.Use Secure Shell(SSH)
+
+Telnet and rlogin protocols uses plain text, not encrypted format which is the security breaches. SSH is a secure protocol that use encryption technology during communication with server.
+
+Never login directly as root unless necessary. Use “sudo” to execute commands. sudo are specified in /etc/sudoers file also can be edited with the “visudo” utility which opens in VI editor.
+
+It’s also recommended to change default SSH 22 port number with some other higher level port number. Open the main SSH configuration file and make some following parameters to restrict users to access.
